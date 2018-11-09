@@ -1,0 +1,77 @@
+>>> from heritagesites.models import HeritageSite,CountryArea,Location,Region
+>>> from django.db.models import Q,Count
+>>> hs=HeritageSite.objects.filter(~Q(country_area__location__region__region_name = 'Europe') & (Q(site_name__contains = 'City')|Q(site_name__contains = 'Town'))) .order_by('site_name')                                                                       >>> hs.count()
+70
+>>> for i in hs:
+...  print(i.site_name)
+... 
+Ancient City of Aleppo
+Ancient City of Bosra
+Ancient City of Damascus
+Ancient City of Ping Yao
+Ancient City of Polonnaruwa
+Ancient City of Qalhat
+Ancient City of Sigiriya
+Ancient Maya City and Protected Tropical Forests of Calakmul, Campeche
+Asmara: A Modernist African City
+Buddhist Ruins of Takht-i-Bahi and Neighbouring City Remains at Sahr-i-Bahlol
+Central University City Campus of the <i>Universidad Nacional Autónoma de México</i> (UNAM)
+City of Cuzco
+City of Potosí
+City of Quito
+City of Safranbolu
+Colonial City of Santo Domingo
+El Tajin, Pre-Hispanic City
+Harar Jugol, the Fortified Historic Town
+Hebron/Al-Khalil Old Town
+Historic Centre of Mexico City and Xochimilco
+Historic Centre of the Town of Diamantina
+Historic Centre of the Town of Goiás
+Historic Centre of the Town of Olinda
+Historic City of Ahmadabad
+Historic City of Ayutthaya
+Historic City of Meknes
+Historic City of Sucre
+Historic City of Vigan
+Historic City of Yazd
+Historic Fortified Town of Campeche
+Historic Inner City of Paramaribo
+Historic Mosque City of Bagerhat
+Historic Quarter of the City of Colonia del Sacramento
+Historic Quarter of the Seaport City of Valparaíso
+Historic Town of Grand-Bassam
+Historic Town of Guanajuato and Adjacent Mines
+Historic Town of Ouro Preto
+Historic Town of Sukhothai and Associated Historic Towns
+Historic Town of Zabid
+Historical Centre of the City of Arequipa
+Hoi An Ancient Town
+Lamu Old Town
+Levuka Historical Port Town
+Melaka and George Town, Historic Cities of the Straits of Malacca
+Old City of Acre
+Old City of Jerusalem and its Walls
+Old City of Sana'a
+Old Town Lunenburg
+Old Town of Galle and its Fortifications
+Old Town of Ghadamès
+Old Town of Lijiang
+Old Towns of Djenné
+Old Walled City of Shibam
+Portuguese City of Mazagan (El Jadida)
+Pre-Hispanic City and National Park of Palenque
+Pre-Hispanic City of Chichen-Itza
+Pre-Hispanic City of Teotihuacan
+Pre-Hispanic Town of Uxmal
+Punic Town of Kerkuane and its Necropolis
+Rabat, Modern Capital and Historic City: a Shared Heritage
+Sacred City of Anuradhapura
+Sacred City of Caral-Supe
+Sacred City of Kandy
+Samarra Archaeological City
+São Francisco Square in the Town of São Cristóvão
+Sewell Mining Town
+Stone Town of Zanzibar
+Town of Luang Prabang
+Walled City of Baku with the Shirvanshah's Palace and Maiden Tower
+White City of Tel-Aviv – the Modern Movement

@@ -1,0 +1,98 @@
+3.1 Model classes cut-and-paste
+class CountryArea(models.Model):
+    country_area_id = models.AutoField(primary_key=True)
+    country_area_name = models.CharField(unique=True, max_length=100)
+    m49_code = models.SmallIntegerField()
+    iso_alpha3_code = models.CharField(max_length=3)
+    dev_status = models.ForeignKey('DevStatus', models.DO_NOTHING, blank=True, null=True)
+    location = models.ForeignKey('Location', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'country_area'
+        ordering = ['country_area_name']
+        verbose_name = 'UNSD M49 Country or Area'
+        verbose_name_plural = 'UNSD M49 Countries or Areas'
+
+    def __str__(self):
+        return self.country_area_name
+
+
+class Location(models.Model):
+    location_id = models.AutoField(primary_key=True)
+    planet = models.ForeignKey('Planet', models.DO_NOTHING)
+    region = models.ForeignKey('Region', models.DO_NOTHING, blank=True, null=True)
+    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING, blank=True, null=True)
+    intermediate_region = models.ForeignKey(IntermediateRegion, models.DO_NOTHING, blank=True, null=True)
+    
+    class Meta:
+        managed = False
+        db_table = 'location'
+        ordering = ['location_id']
+
+    def __str__(self):
+        return self.planet_name
+
+
+class Region(models.Model):
+    region_id = models.AutoField(primary_key=True)
+    region_name = models.CharField(unique=True, max_length=100)
+    planet = models.ForeignKey('Planet', models.DO_NOTHING)
+
+
+    class Meta:
+        managed = False
+        db_table = 'region'
+        ordering = ['region_name']
+        verbose_name = 'UNSD M49 Region'
+        verbose_name_plural = 'UNSD M49 Regions'
+
+    def __str__(self):
+        return self.region_name
+
+3.2 Largest protected area in Africa
+mysql> SELECT rg.region_name, sr.sub_region_name, ca.country_area_name,hs.site_name, hs.area_hectares
+    -> FROM heritage_site as hs
+    -> LEFT JOIN heritage_site_jurisdiction hsj
+    -> ON hs.heritage_site_id = hsj.heritage_site_id
+    -> LEFT JOIN country_area ca
+    -> ON hsj.country_area_id = ca.country_area_id
+    -> LEFT JOIN location lc 
+    -> ON ca.location_id=lc.location_id
+    -> LEFT JOIN region rg
+    -> ON lc.region_id=rg.region_id
+    -> RIGHT JOIN sub_region sr
+    -> ON lc.sub_region_id=sr.sub_region_id            
+    -> INNER JOIN (SELECT MAX(hs.area_hectares) as lg, rg.region_name as region
+    -> FROM heritage_site hs
+    -> LEFT JOIN heritage_site_jurisdiction hsj
+    -> ON hs.heritage_site_id = hsj.heritage_site_id
+    -> LEFT JOIN country_area ca
+    -> ON hsj.country_area_id = ca.country_area_id
+    -> LEFT JOIN location lc 
+    -> ON ca.location_id=lc.location_id
+    -> LEFT JOIN region rg
+    -> ON lc.region_id=rg.region_id
+    -> RIGHT JOIN sub_region sr
+    -> ON lc.sub_region_id=sr.sub_region_id        
+    -> WHERE rg.region_name="Africa"
+    -> GROUP BY rg.region_name) lg 
+    -> ON hs.area_hectares=lg.lg AND rg.region_name=lg.region
+    -> ;
++-------------+--------------------+-------------------+------------------------------------+---------------+
+| region_name | sub_region_name    | country_area_name | site_name                          | area_hectares |
++-------------+--------------------+-------------------+------------------------------------+---------------+
+| Africa      | Sub-Saharan Africa | Niger             | Air and Ténéré Natural Reserves    |       7736000 |
++-------------+--------------------+-------------------+------------------------------------+---------------+
+1 row in set (0.02 sec)
+
+3.3 Developed vs Developing countries in Asia
+>>> from heritagesites.models import Location, Region, CountryArea, DevStatus
+>>> from django.db.models import Count
+>>> from django.db.models import F
+>>> loc = Location.objects.values(region_name = F('region__region_name'), dev_status = F('countryarea__dev_status__dev_status_name')) .annotate(count=Count('countryarea__dev_status__dev_status_name')) .filter(region__region_name = 'Asia').order_by('countryarea__dev_status__dev_status_name')
+>>> for l in loc:
+...  print(l)
+... 
+{'region_name': 'Asia', 'dev_status': 'Developed', 'count': 3}
+{'region_name': 'Asia', 'dev_status': 'Developing', 'count': 47}

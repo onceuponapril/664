@@ -1,0 +1,78 @@
+2.2
+class SiteListView(generic.ListView):
+	model = HeritageSite
+	context_object_name = 'sites'
+	template_name = 'heritagesites/site.html'
+	paginate_by = 50
+
+    def get_queryset(self):
+        return HeritageSite.objects.all().select_related('heritage_site_category').order_by('site_name')
+
+4.3
+class SiteModelTest(TestCase):
+
+	def setUp(self):
+		HeritageSiteCategory.objects.create(category_name='Cultural')
+		category = HeritageSiteCategory.objects.get(pk=1)
+		HeritageSite.objects.create(
+			# TODO restore missing properties and values
+            site_name='Cultural Landscape and Archaeological Remains of the Bamiyan Valley',
+            heritage_site_category_id=category.category_id,
+            description='The cultural landscape and archaeological remains...',
+			justification='The Buddha statues and the cave art in Bamiyan Valley are...',
+			date_inscribed='2003',
+			longitude='67.82525000',
+			latitude='34.84694000',
+			area_hectares='158.9265',
+			transboundary=0)
+
+	def test_site_name(self):
+		site = HeritageSite.objects.get(pk=1)
+		expected_object_name = f'{site.site_name}'
+		self.assertEqual(expected_object_name, 'Cultural Landscape and Archaeological Remains of the Bamiyan Valley')
+
+(venv) fanpanzengdeMacBook-Pro-114:heritagesites fanpanzeng$ python3 manage.py test -n
+Creating test database for alias 'default'...
+System check identified no issues (0 silenced).
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.084s
+
+OK
+Destroying test database for alias 'default'...
+
+5.5 
+Template repair work
+base.html: fixed 
+line4: {% load static %} ;
+line 40-42: {% block content %}..{% endblock content %}
+
+home.html: fixed add {% extends 'heritagesites/base.html' %} on top and add {% block content %}...{% endblock content %} between the main div.
+
+site.html: add {% extends 'heritagesites/base.html' %} on the top; add {% for site in sites %}...  {% endfor %} to iterate site.site_name
+
+site_detail.html: add column for site.justification and site.heritage_site_category.
+{% if site.justification %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>justification</p>
+    </div>
+    <div class="col-sm-10">
+      {{site.justification | safe}}
+    </div>
+  </div>
+{% endif %}
+
+{% if site.heritage_site_category_id %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>Heritage Site Category</p>
+    </div>
+    <div class="col-sm-10">
+      {{site.heritage_site_category.category_name| safe}}
+    </div>
+  </div>
+{% endif %}
+
+6.1 Selected Website color scheme
+https://www.awwwards.com/sites/aiga-design-conference-2016

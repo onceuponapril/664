@@ -1,0 +1,34 @@
+mysql> SELECT subregion.sub_region_name AS `subregion`, ca.country_area_name AS `country/area`, heritage_site.site_name AS `heritage site`, category.category_name AS `category`, heritage_site.date_inscribed AS `date_inscribed`
+    -> FROM heritage_site
+    ->        LEFT JOIN heritage_site_jurisdiction hsj 
+    ->               ON heritage_site.heritage_site_id = hsj.heritage_site_id
+    ->        LEFT JOIN country_area ca
+    ->               ON hsj.country_area_id = ca.country_area_id
+    ->        LEFT JOIN heritage_site_category category
+    ->               ON heritage_site.heritage_site_category_id = category.category_id
+    ->    LEFT JOIN location l
+    ->               ON ca.location_id = l.location_id
+    ->        LEFT JOIN sub_region subregion 
+    ->               ON l.sub_region_id = subregion.sub_region_id       
+    ->  WHERE TRIM(ca.country_area_name) = 'India' AND heritage_site.date_inscribed>=2000 
+    ->  ORDER BY heritage_site.date_inscribed DESC,heritage_site.site_name;
++---------------+--------------+--------------------------------------------------------------------------------------------+----------+----------------+
+| subregion     | country/area | heritage site                                                                              | category | date_inscribed |
++---------------+--------------+--------------------------------------------------------------------------------------------+----------+----------------+
+| Southern Asia | India        | Victorian Gothic and Art Deco Ensembles of Mumbai                                          | Cultural |           2018 |
+| Southern Asia | India        | Historic City of Ahmadabad                                                                 | Cultural |           2017 |
+| Southern Asia | India        | Archaeological Site of Nalanda <i>Mahavihara</i> at Nalanda, Bihar                         | Cultural |           2016 |
+| Southern Asia | India        | Khangchendzonga National Park                                                              | Mixed    |           2016 |
+| Southern Asia | India        | The Architectural Work of Le Corbusier, an Outstanding Contribution to the Modern Movement | Cultural |           2016 |
+| Southern Asia | India        | Great Himalayan National Park Conservation Area                                            | Natural  |           2014 |
+| Southern Asia | India        | Rani-ki-Vav (the Queen’s Stepwell) at Patan, Gujarat                                       | Cultural |           2014 |
+| Southern Asia | India        | Hill Forts of Rajasthan                                                                    | Cultural |           2013 |
+| Southern Asia | India        | Western Ghats                                                                              | Natural  |           2012 |
+| Southern Asia | India        | The Jantar Mantar, Jaipur                                                                  | Cultural |           2010 |
+| Southern Asia | India        | Red Fort Complex                                                                           | Cultural |           2007 |
+| Southern Asia | India        | Champaner-Pavagadh Archaeological Park                                                     | Cultural |           2004 |
+| Southern Asia | India        | Chhatrapati Shivaji Terminus (formerly Victoria Terminus)                                  | Cultural |           2004 |
+| Southern Asia | India        | Rock Shelters of Bhimbetka                                                                 | Cultural |           2003 |
+| Southern Asia | India        | Mahabodhi Temple Complex at Bodh Gaya                                                      | Cultural |           2002 |
++---------------+--------------+--------------------------------------------------------------------------------------------+----------+----------------+
+15 rows in set (0.00 sec)

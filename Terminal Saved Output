@@ -1,0 +1,49 @@
+fanpanzengdeMacBook-Pro:~ fanpanzeng$ mysql_config_editor set --login-path=client --host=localhost --user=zfp --password
+Enter password: 
+fanpanzengdeMacBook-Pro:~ fanpanzeng$ mysql_config_editor print --all
+[client]
+user = zfp
+password = *****
+host = localhost
+fanpanzengdeMacBook-Pro:~ fanpanzeng$ mysql -uzfp
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 74
+Server version: 8.0.12 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> USE unesco_heritage_sites;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> SELECT sr.sub_region_name AS 'sub region', ROUND(CAST(SUM(hs.area_hectares) AS DECIMAL(10,1))) AS
+    ->        area_hectares
+    ->   FROM heritage_site hs
+    ->        LEFT JOIN heritage_site_jurisdiction hsj 
+    ->               ON hs.heritage_site_id = hsj.heritage_site_id
+    ->        LEFT JOIN country_area ca 
+    ->               ON hsj.country_area_id = ca.country_area_id
+    ->        LEFT JOIN sub_region sr 
+    ->               ON ca.sub_region_id = sr.sub_region_id
+    ->  WHERE sr.sub_region_name LIKE '%asia%'
+    ->  GROUP BY sr.sub_region_name
+    ->  ORDER BY area_hectares DESC;
++--------------------+---------------+
+| sub region         | area_hectares |
++--------------------+---------------+
+| Eastern Asia       |       8547176 |
+| South-eastern Asia |       7149778 |
+| Southern Asia      |       4080770 |
+| Central Asia       |       3150430 |
+| Western Asia       |        833377 |
++--------------------+---------------+
+5 rows in set (0.00 sec)
+
+mysql> 

@@ -1,0 +1,4 @@
+hs = HeritageSite.objects\
+.select_related('location','region')\
+.filter((Q(country_area__location__region_name = 'Africa') |Q(country_area__location__region_name = 'Asia')|Q(country_area__location__region_name = 'Americas'))& Q(latitude__range=(-23.43685,23.43685 )))\
+.aggregate(count=Count('heritage_site_id', distinct=True))

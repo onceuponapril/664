@@ -1,0 +1,12 @@
+{% extends 'heritagesites/base.html' %}
+
+{% if site.description %}
+  <div class="row">
+    <div class="col-sm-2">
+      <p>Description</p>
+    </div>
+    <div class="col-sm-10">
+      {{site.description | safe}}
+    </div>
+  </div>
+{% endif %}

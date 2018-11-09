@@ -1,0 +1,26 @@
+>>>  from django.db.models import Count, Q,F
+>>> ssa=HeritageSite.objects.select_related('heritage_site_category').values(sub_region_name=F('country_area__location__sub_region__sub_region_name'), intermediate_region_name=F('country_area__location__intermediate_region__intermediate_region_name'),category_name=F('heritage_site_category__category_name')).filter(country_area__location__intermediate_region__intermediate_region_name='Sub-Saharan Africa').annotate(count=Count('heritage_site_id',distinct=True)).order_by('intermediate_region_name','category_name')
+>>> ssa.count()
+0
+>>> for i in ssa:
+...     print(i)
+... 
+>>> ssa=HeritageSite.objects.select_related('heritage_site_category').values(sub_region_name=F('country_area__location__sub_region__sub_region_name'), intermediate_region_name=F('country_area__location__intermediate_region__intermediate_region_name'),category_name=F('heritage_site_category__category_name')).filter(country_area__location__sub_region__sub_region_name='Sub-Saharan Africa').annotate(count=Count('heritage_site_id',distinct=True)).order_by('intermediate_region_name','category_name')
+>>> ssa.count()
+12
+>>> for i in ssa:
+...  print(i)
+... 
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Eastern Africa', 'category_name': 'Cultural', 'count': 25}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Eastern Africa', 'category_name': 'Mixed', 'count': 1}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Eastern Africa', 'category_name': 'Natural', 'count': 16}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Middle Africa', 'category_name': 'Cultural', 'count': 1}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Middle Africa', 'category_name': 'Mixed', 'count': 2}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Middle Africa', 'category_name': 'Natural', 'count': 9}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Southern Africa', 'category_name': 'Cultural', 'count': 7}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Southern Africa', 'category_name': 'Mixed', 'count': 1}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Southern Africa', 'category_name': 'Natural', 'count': 6}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Western Africa', 'category_name': 'Cultural', 'count': 20}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Western Africa', 'category_name': 'Mixed', 'count': 1}
+{'sub_region_name': 'Sub-Saharan Africa', 'intermediate_region_name': 'Western Africa', 'category_name': 'Natural', 'count': 8}
+>>> 
